@@ -7,10 +7,10 @@ rule_files:
 
 scrape_configs:
   - job_name: snmp
-    static_configs:
-     - targets:
-       - 10.101.172.82
-       - 10.101.172.81
+    scrape_interval: 60s
+    file_sd_configs:
+      - files:
+        -  /etc/prometheus/config/cisco.yml
     metrics_path: /snmp
     params:
       module: [cisco_mib]
@@ -21,5 +21,22 @@ scrape_configs:
         target_label: instance
       - target_label: __address__
         replacement: 10.101.33.101:9116
+
+  - job_name: snmp_checkpoint
+    scrape_interval: 60s
+    file_sd_configs:
+      - files:
+        -  /etc/prometheus/config/checkpoint.yml
+    metrics_path: /snmp
+    params:
+      module: [checkpoint_mib]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 10.101.33.103:9116
+
 remote_write:
         - url: "http://10.101.33.101:9900/write"

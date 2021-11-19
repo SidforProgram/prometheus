@@ -1,0 +1,83 @@
+{
+    "version" : 2021090101,
+    "index_patterns" : [
+      "prometheus-*"
+    ],
+    "settings" : {
+      "index" : {
+      "opendistro": {
+            "index_state_management": {
+               "policy_id": "prometheus_ilm"
+            }
+         },
+        "codec" : "best_compression",
+        "mapping" : {
+          "total_fields" : {
+            "limit" : "5000"
+          }
+        },
+        "refresh_interval" : "10s",
+        "number_of_shards" : "2",
+        "number_of_replicas" : "1",
+        "query" : {
+          "default_field" : [
+            "@timestamp",
+            "@version",
+            "node.ipaddr",
+            "event.code",
+            "node.hostname",
+            "tags"
+          ]
+        }
+      }
+    },
+    "mappings" : {
+      "numeric_detection" : true,
+      "dynamic_templates" : [
+        {
+          "event.code" : {
+            "path_match" : "event.code",
+            "mapping" : {
+              "type" : "keyword"
+            }
+          }
+        },
+        {
+          "string_fields" : {
+            "mapping" : {
+              "type" : "keyword"
+            },
+            "match_mapping_type" : "string",
+            "match" : "*"
+          }
+        }
+      ],
+      "properties" : {
+        "node" : {
+          "dynamic" : true,
+          "type" : "object",
+          "properties" : {
+            "hostname" : {
+              "type" : "keyword"
+            },
+            "ipaddr" : {
+              "type" : "ip"
+            }
+          }
+        },
+        "@timestamp" : {
+          "type" : "date"
+        },
+        "dst_geo_location" : {
+          "type" : "geo_point"
+        },
+        "@version" : {
+          "type" : "keyword"
+        },
+        "tags" : {
+          "type" : "keyword"
+        }
+      }
+    },
+    "aliases" : { }
+ }

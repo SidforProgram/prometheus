@@ -1,0 +1,6 @@
+- targets:
+  - 10.101.172.82
+  - 10.101.172.81
+
+  labels:
+    servicename: ciscoSW

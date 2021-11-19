@@ -1,0 +1,33 @@
+input {
+
+    pipeline {
+        address => "output"
+    }
+
+}
+
+filter {
+
+    
+}
+
+output {
+
+     if [job] in ["snmp"] {
+        elasticsearch {
+           hosts => ["${SIEM_ES_HOST:10.101.33.201:9200}"]
+           ssl => true
+           ssl_certificate_verification => false
+           ilm_enabled => false
+           # If ssl_certificate_verification is true, uncomment cacert and set the path to the certificate.
+           #cacert => "/etc/logstash/root-ca.pem"
+           user => "${LOGSTASH_USER:systexlogstash}"
+           password => "${LOGSTASH_PW}"
+           template => "${ELASTIFLOW_TEMPLATE_PATH:/etc/logstash/templates/prometheus.template.json}"
+           template_name => "prometheus-"
+           template_overwrite => "true"
+           index => "prometheus-snmp%{+YYYY.MM}"
+            }
+       }
+
+}

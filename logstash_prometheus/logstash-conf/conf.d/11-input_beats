@@ -1,0 +1,69 @@
+input {
+    #heartbeat
+    beats {
+        port => 5044
+        ssl => false
+    }
+
+}
+
+filter {
+
+    mutate {
+        # for pretty visualization on UPTIME UI
+        remove_tag => [ "beats_input_raw_event" ]
+
+        # for host enrichment
+        copy => { "[monitor][ip]" => "[host][ip]"}
+    }
+
+#   https://github.com/elastic/logstash/issues/9007
+#   add HOSTNAME="myhostname" to /etc/default/logstash when running logstash as a service
+    mutate { add_field => { "[logstash][hostname]" => "${HOSTNAME:no_logstash_hostname}" }   }
+    mutate {
+        rename => { "[agent][hostname]" => "[metricsbeats][hostname]" }
+        remove_field => ["host"]
+        remove_field => ["agent"]
+        remove_field => ["ecs"]
+        remove_field => ["tags"]
+        remove_field => ["fields"]
+        remove_field => ["@version"]
+        remove_field => ["input"]
+        remove_field => ["log"]
+        remove_field => "[metricset][name]"
+        remove_field => "[event][module]"
+        remove_field => "[event][dataset]"
+      #  remove_field => ["message"]
+       }
+
+
+     #rename all prometheus.labels
+       ruby {
+        code => '
+            event.get("[prometheus][labels]").each { |k, v|
+                event.set(k,v)
+            }
+            event.remove("[prometheus][labels]")
+        '
+    }
+
+     #rename all prometheus.metrics
+       ruby {
+        code => '
+            event.get("[prometheus][metrics]").each { |k, v|
+                event.set(k,v)
+            }
+            event.remove("[prometheus][metrics]")
+        '
+    }
+
+
+}
+
+output {
+
+    pipeline {
+            send_to => "common_ecs"
+        }
+    
+}

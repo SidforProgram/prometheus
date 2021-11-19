@@ -1,0 +1,55 @@
+version: '3.6'
+
+services:
+  metricbeat-promethues:
+    image: docker.elastic.co/beats/metricbeat:7.15.2
+    container_name: metricbeat-prometheus
+    restart: always
+    hostname: prometheusmetricbeat
+    volumes:
+            #    -  ./prometheus.yml:/usr/share/metricbeat/modules.d/prometheus.yml
+      -  ./metricbeat.yml:/usr/share/metricbeat/metricbeat.yml
+      - /proc:/hostfs/proc:ro
+      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      - /:/hostfs:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      - metricbeat:/usr/share/metricbeat/data
+    environment:
+      - TZ=Asia/Taipei
+    # disable strict permission checks
+    ports:
+      - 9900:9201/tcp
+    command: ["--strict.perms=false", "-system.hostfs=/hostfs"]
+    networks:
+      - prometheus-net
+
+  logstash-promethues:
+    image: logstash_prometheus:1
+    container_name: logstash-prometheus
+    hostname: logstash-prometheus
+    logging:
+     driver: "json-file"
+     options:
+       max-size: "3M"
+       max-file: "3"
+
+    restart: always
+    #    ports:
+    #  - 65044:5044/udp
+    #  - 65044:5044/tcp
+    environment:
+      # JVM Heap size - this MUST be at least 3GB (4GB preferred)
+      LS_JAVA_OPTS: '-Xms2g -Xmx2g'
+
+      # SIEM global configuration
+      LOGSTASH_USER: "systexlogstash"
+      SIEM_ES_HOST: "10.101.33.203:9200"
+    networks:
+      - prometheus-net
+
+volumes:
+  metricbeat:
+
+networks:
+  prometheus-net:
+
