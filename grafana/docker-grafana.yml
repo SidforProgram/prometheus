@@ -8,6 +8,6 @@ services:
      restart: always
 
      volumes:
-      - /data/grafana/var/lib/grafana:/var/lib/grafana
-      - /data/grafana/etc/grafana:/etc/grafana
+      - ./var/grafana:/var/lib/grafana
+      - ./etc/grafana:/etc/grafana
 
