@@ -1,5 +1,4 @@
 - targets:
-  - 10.101.21.251
-  - 10.101.21.252
+  - 10.11.5.254
   labels:
     servicename: checkpointfw

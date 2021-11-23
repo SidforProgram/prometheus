@@ -13,9 +13,8 @@ filter {
 
 output {
 
-     if [job] in ["snmp"] {
         elasticsearch {
-           hosts => ["${SIEM_ES_HOST:10.101.33.201:9200}"]
+           hosts => ["${SIEM_ES_HOST:10.11.233.101:9200}"]
            ssl => true
            ssl_certificate_verification => false
            ilm_enabled => false
@@ -26,8 +25,7 @@ output {
            template => "${ELASTIFLOW_TEMPLATE_PATH:/etc/logstash/templates/prometheus.template.json}"
            template_name => "prometheus-"
            template_overwrite => "true"
-           index => "prometheus-snmp%{+YYYY.MM}"
+           index => "prometheus-%{[labels][job]}-%{+YYYY.MM}"
             }
-       }
 
 }

@@ -37,6 +37,15 @@ filter {
        }
 
 
+     #rename all prometheus.labels
+       ruby {
+        code => '
+            event.get("[prometheus][labels]").each { |k, v|
+                event.set(k,v)
+            }
+            event.remove("[prometheus][labels]")
+        '
+    }
 
      #rename all prometheus.metrics
        ruby {
@@ -47,18 +56,6 @@ filter {
             event.remove("[prometheus][metrics]")
         '
     }
-
-
-     #rename all prometheus.labels
-       ruby {
-        code => '
-            event.get("[prometheus]").each { |k, v|
-                event.set(k,v)
-            }
-            event.remove("[prometheus]")
-        '
-    }
-
 
 
 }

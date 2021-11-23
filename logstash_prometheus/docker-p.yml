@@ -43,7 +43,7 @@ services:
 
       # SIEM global configuration
       LOGSTASH_USER: "systexlogstash"
-      SIEM_ES_HOST: "10.101.33.203:9200"
+      SIEM_ES_HOST: "10.11.233.101:9200"
     networks:
       - prometheus-net
 
