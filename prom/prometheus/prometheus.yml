@@ -21,6 +21,33 @@ scrape_configs:
         target_label: instance
       - target_label: __address__
         replacement: 10.11.233.103:9116
-
+  - job_name: vmware_exporter
+    static_configs:
+     - targets: ["10.11.233.103:9272"]
+  - job_name: windows_exporter
+    file_sd_configs:
+      - files:
+        - /etc/prometheus/config/windows.yml
+  - job_name: icmp-prob
+    scrape_interval: 30s
+    metrics_path: /probe
+    params:
+      module: [icmp]
+    file_sd_configs:
+      - files:
+        - /etc/prometheus/config/icmp-prob.yml    
+    relabel_configs:
+      - source_labels: [__address__]
+        regex: (.*)(:80)?
+        target_label: __param_target
+        replacement: ${1}
+      - source_labels: [__param_target]
+        regex: (.*)
+        target_label: ping
+        replacement: ${1}
+      - source_labels: []
+        regex: .*
+        target_label: __address__
+        replacement: 10.11.233.103:9115
 remote_write:
         - url: "http://10.11.233.103:9900/write"

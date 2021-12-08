@@ -1,0 +1,4 @@
+- targets:
+  - 10.11.179.9:9182
+  labels:
+    node: vm 

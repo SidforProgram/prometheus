@@ -1,0 +1,20 @@
+version: '3.6'
+
+services:
+  black-exporter:
+    image: prom/blackbox-exporter:latest
+    container_name: blackbox-exporter
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./blackbox.yml:/config/blackbox.yml
+    command: --config.file=/config/blackbox.yml
+    ports:
+      - 9115:9115
+    logging:
+     driver: "json-file"
+     options:
+       max-size: "3M"
+       max-file: "3"
+
