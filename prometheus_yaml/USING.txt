@@ -1,0 +1,4 @@
+運行FastAPI 指令 : uvicorn Fast:app
+注意事項：Pytohn
+    1. 若修改.env檔內容，請重新執行 Fast.py 檔
+    2. 若有檔案新增或刪除，請盡量重新 Get 一次檔案，以免遺漏檔案

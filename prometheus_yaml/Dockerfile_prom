@@ -1,0 +1,34 @@
+FROM python:3.9-alpine as base
+#FROM python:3.9 as base
+FROM base as builder
+COPY requirements.txt /requirements.txt
+RUN python -m pip install --user --upgrade pip
+RUN pip install --user -r /requirements.txt
+
+FROM base
+# copy only the dependencies installation from the 1st stage image
+COPY --from=builder /root/.local /root/.local
+#COPY src /app
+#WORKDIR /app
+ENV TZ=Asia/Taipei
+#install B85B Source
+#COPY
+RUN mkdir /data/
+RUN mkdir /data/prometheus/
+RUN mkdir /opt/SYSTEX/
+RUN mkdir /opt/SYSTEX/API
+WORKDIR /opt/SYSTEX/API
+COPY . .
+# update PATH environment variable
+ENV PATH=/opt/SYSTEX/API:/root/.local/bin:$PATH
+
+EXPOSE 8000
+#CMD ["/bin/sh"]
+#uvicorn fast:app --host 0.0.0.0 --port 8000
+CMD ["uvicorn", "fast:app", "--host","0.0.0.0", "--port", "8000"]
+
+#ENTRYPOINT ["gunicorn", "-c", "/opt/SYSTEX/Line/gunicorn.conf.py", " src.wsgi:application"]
+#CMD ["/usr/sbin/sshd", "-D"]
+#CMD ["/opt/SYSTEX/SmartCIC/gunicorn/start.sh"]
+#CMD ["gunicorn", "--bind", ":8000","--workers", "1", "src.wsgi:application", "--threads=3"]
+#CMD ["gunicorn", "--bind", ":8000","--workers", "5", "src.wsgi:application", "--preload"]
