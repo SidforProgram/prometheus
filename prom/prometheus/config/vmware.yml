@@ -1,0 +1,4 @@
+- targets:
+  - 10.11.233.103:9272
+  labels:
+    servicename: vmware

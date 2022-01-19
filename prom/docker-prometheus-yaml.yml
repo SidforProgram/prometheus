@@ -6,6 +6,8 @@ services:
     container_name: prometheus
     restart: unless-stopped
     volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
       - ./prometheus:/etc/prometheus
       - prometheus_data:/prometheus
     command:
@@ -17,16 +19,29 @@ services:
     ports:
       - 9090:9090
 
-services:
   prometheus_yaml:
     image: promyaml:1
     container_name: prometheus_yaml
     restart: unless-stopped
     volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
       - ./prometheus:/data/prometheus
     ports:
       - 9091:8000
 
+  alertmanager:
+    image: prom/alertmanager:latest
+    ports:
+      - 9093:9093
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ./prometheus/alertmanager/:/etc/alertmanager/
+    restart: always
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--storage.path=/alertmanager'
 
 
 volumes:

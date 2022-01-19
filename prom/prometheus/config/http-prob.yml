@@ -1,0 +1,17 @@
+- targets:
+  - http://10.40.192.210:8080/
+  - https//www.google.com
+  - https://10.11.233.101:9200
+  labels:
+    check: http 
+    checkname: http-prob 
+- targets:
+  - http://yahoo.com.tw/
+  labels:
+    checktest2: http -yahoo
+    
+    - targets:
+  - http://www.mobile01.com
+
+  labels:
+    checktest1: http-mobile01

@@ -1,0 +1,21 @@
+global:
+  resolve_timeout: 2m
+  smtp_smarthost: 'smtp.gmail.com:587'
+  smtp_from: 'b85bsystex@gmail.com'
+  smtp_auth_username: 'b85bsystex@gmail.com'
+  smtp_auth_password: 'Admin123!'
+
+route:
+  # If an alert has successfully been sent, wait 'repeat_interval' to resend them.
+  #repeat_interval重覆發送告警時間
+  group_wait: 60s
+  group_interval: 10s
+  repeat_interval: 10s    
+  #  A default receiver
+  receiver: icmp-prob  
+
+receivers:
+  - name: 'icmp-prob'
+    email_configs:
+    - to: 'tonychien@systex.com'
+   

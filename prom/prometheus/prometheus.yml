@@ -1,7 +1,14 @@
 global:
   scrape_interval: 60s
   scrape_timeout: 10s
+# Alertmanager configuration
 
+alerting:
+  alertmanagers:
+  - static_configs:
+    - targets: ["alertmanager:9093"]
+
+# - alertmanager:9093
 rule_files:
   - alert.yml
 
@@ -17,19 +24,53 @@ scrape_configs:
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
+      - source_labels: [__address__]
+        target_label: systexname
+        replacement: "b85b"
       - source_labels: [__param_target]
         target_label: instance
       - target_label: __address__
         replacement: 10.11.233.103:9116
+
+  - job_name: snmp_switch
+    file_sd_configs:
+      - files:
+        -  /etc/prometheus/config/networkswitch.yml
+    metrics_path: /snmp
+    params:
+      module: [networkswitch]
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__address__]
+        target_label: servicename
+        replacement: "networkswitch" 
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 10.11.233.103:9117  
+    metric_relabel_configs: 
+      - source_labels: [hh3cEntityExtPhysicalIndex]
+        target_label: SwitchCpuUsage
+      - source_labels: [hh3cEntityExtMemUsage]
+        target_label: SwitchMenUsage
+
+        
   - job_name: vmware_exporter
-    static_configs:
-     - targets: ["10.11.233.103:9272"]
+    file_sd_configs:
+      - files:
+        -  /etc/prometheus/config/vmware.yml
+     relabel_configs:
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: 10.11.4.1 
   - job_name: windows_exporter
     file_sd_configs:
       - files:
         - /etc/prometheus/config/windows.yml
   - job_name: icmp-prob
-    scrape_interval: 30s
+    scrape_interval: 90s
     metrics_path: /probe
     params:
       module: [icmp]
@@ -37,6 +78,9 @@ scrape_configs:
       - files:
         - /etc/prometheus/config/icmp-prob.yml    
     relabel_configs:
+      - source_labels: [__address__]
+        target_label: servicename
+        replacement: "icmp"
       - source_labels: [__address__]
         regex: (.*)(:80)?
         target_label: __param_target
@@ -48,6 +92,21 @@ scrape_configs:
       - source_labels: []
         regex: .*
         target_label: __address__
+        replacement: 10.11.233.103:9115
+  - job_name: http-prob
+    scrape_interval: 90s
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    file_sd_configs:
+      - files:
+         - /etc/prometheus/config/http-prob.yml    
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
         replacement: 10.11.233.103:9115
 remote_write:
         - url: "http://10.11.233.103:9900/write"

@@ -1,0 +1,15 @@
+{{ define "email.html" }}
+    {{ range .Alerts }}
+<pre>
+    ========start==========
+    告警程序: prometheus_alert 
+    告警級別: {{ .Labels.severity }} 
+    告警類型: {{ .Labels.alertname }} 
+    故障主機: {{ .Labels.instance }} 
+    告警主題: {{ .Annotations.summary }}
+    告警詳情: {{ .Annotations.description }}
+    觸發時間: {{ .StartsAt.Format "2019-12-14 16:01:01" }}
+    ========end==========
+</pre>
+    {{ end }}
+{{ end }}

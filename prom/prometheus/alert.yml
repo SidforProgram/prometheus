@@ -1,6 +1,35 @@
 groups:
-  - name: DemoAlerts
+  - name: PingAlerts
     rules:
-      - alert: InstanceDown 
-        expr: up{job="services"} < 1 
-        for: 5m 
+      - alert: PingIsDown
+        expr: probe_success == 0
+        for: 1m 
+        labels:
+           severity: "Critical"
+        annotations:
+           summary: "設備IP {{$labels.ping}} is down"
+           description: "{{$labels.ping}} of job {{$labels.job}} has been down for more than 5 minutes."
+           
+  - name: httpcheck
+    rules:
+      - alert: httpcheck
+        expr: probe == 0
+        for: 1m 
+        labels:
+           severity: "Critical"
+        annotations:
+           summary: "設備IP {{$labels.ping}} is down"
+           description: "{{$labels.ping}} of job {{$labels.job}} has been down for more than 5 minutes."
+           
+  - name: tcpcheck
+    rules:
+      - alert: tcpcheck
+        expr: probe == 0
+        for: 1m 
+        labels:
+           severity: "Critical"
+        annotations:
+           summary: "設備IP {{$labels.ping}} is down"
+           description: "{{$labels.ping}} of job {{$labels.job}} has been down for more than 5 minutes."
+           
+           
