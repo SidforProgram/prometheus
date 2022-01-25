@@ -1,6 +1,6 @@
 global:
   scrape_interval: 60s
-  scrape_timeout: 10s
+  scrape_timeout: 20s
 # Alertmanager configuration
 
 alerting:
@@ -38,7 +38,7 @@ scrape_configs:
         -  /etc/prometheus/config/networkswitch.yml
     metrics_path: /snmp
     params:
-      module: [networkswitch]
+      module: [hp_mib]
     relabel_configs:
       - source_labels: [__address__]
         target_label: __param_target
@@ -60,11 +60,6 @@ scrape_configs:
     file_sd_configs:
       - files:
         -  /etc/prometheus/config/vmware.yml
-     relabel_configs:
-      - source_labels: [__param_target]
-        target_label: instance
-      - target_label: __address__
-        replacement: 10.11.4.1 
   - job_name: windows_exporter
     file_sd_configs:
       - files:
