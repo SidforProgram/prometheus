@@ -4,3 +4,4 @@ sed  -i 's/hh3cEntityExtMemUsage/SwitchMemUsage/g' snmp.yml
 sed  -i 's/ciscoMemoryPoolUsed/SwitchMemUsed/g' snmp.yml
 sed  -i 's/ciscoMemoryPoolFree/SwitchMemFree/g' snmp.yml
 sed  -i 's/cpmCPUTotal5minRev/SwitchCpuUsage/g' snmp.yml
+mv snmp.yml ./snmp_exporter

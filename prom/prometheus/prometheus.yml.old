@@ -30,7 +30,7 @@ scrape_configs:
       - source_labels: [__param_target]
         target_label: instance
       - target_label: __address__
-        replacement: 10.11.179.50:9116
+        replacement: 10.11.233.103:9116
 
   - job_name: snmp_switch
     file_sd_configs:
@@ -48,7 +48,7 @@ scrape_configs:
       - source_labels: [__param_target]
         target_label: instance
       - target_label: __address__
-        replacement: 10.11.179.50:9117  
+        replacement: 10.11.233.103:9117  
     metric_relabel_configs: 
       - source_labels: [hh3cEntityExtPhysicalIndex]
         target_label: SwitchCpuUsage
@@ -87,7 +87,7 @@ scrape_configs:
       - source_labels: []
         regex: .*
         target_label: __address__
-        replacement: 10.11.179.50:9115
+        replacement: 10.11.233.103:9115
   - job_name: http-prob
     scrape_interval: 90s
     metrics_path: /probe
@@ -102,6 +102,6 @@ scrape_configs:
       - source_labels: [__param_target]
         target_label: instance
       - target_label: __address__
-        replacement: 10.11.179.50:9115
+        replacement: 10.11.233.103:9115
 remote_write:
-        - url: "http://10.11.179.50:9900/write"
+        - url: "http://10.11.233.103:9900/write"
